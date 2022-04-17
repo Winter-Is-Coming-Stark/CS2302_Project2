@@ -1,0 +1,1 @@
+cmd_/home/winter/CS2302_Project2/syscall1/start_trace.ko := arm-linux-androideabi-ld -r  -T /home/winter/android-kernel/kernel/goldfish/scripts/module-common.lds --build-id  -o /home/winter/CS2302_Project2/syscall1/start_trace.ko /home/winter/CS2302_Project2/syscall1/start_trace.o /home/winter/CS2302_Project2/syscall1/start_trace.mod.o
