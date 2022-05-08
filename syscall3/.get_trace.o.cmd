@@ -1,8 +1,8 @@
-cmd_/home/winter/CS2302_Project2/syscall1/start_trace.o := arm-linux-androideabi-gcc -Wp,-MD,/home/winter/CS2302_Project2/syscall1/.start_trace.o.d  -nostdinc -isystem /usr/lib/android/android-ndk-linux/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin/../lib/gcc/arm-linux-androideabi/4.9/include -I/home/winter/android-kernel/kernel/goldfish/arch/arm/include -Iarch/arm/include/generated -Iinclude  -include /home/winter/android-kernel/kernel/goldfish/include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-goldfish/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -fno-delete-null-pointer-checks -Os -fno-pic -marm -fno-dwarf2-cfi-asm -mabi=aapcs-linux -mno-thumb-interwork -funwind-tables -D__LINUX_ARM_ARCH__=7 -march=armv7-a -msoft-float -Uarm -Wframe-larger-than=1024 -fno-stack-protector -Wno-unused-but-set-variable -fomit-frame-pointer -g -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack  -DMODULE  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(start_trace)"  -D"KBUILD_MODNAME=KBUILD_STR(start_trace)" -c -o /home/winter/CS2302_Project2/syscall1/start_trace.o /home/winter/CS2302_Project2/syscall1/start_trace.c
+cmd_/home/winter/CS2302_Project2/syscall3/get_trace.o := arm-linux-androideabi-gcc -Wp,-MD,/home/winter/CS2302_Project2/syscall3/.get_trace.o.d  -nostdinc -isystem /usr/lib/android/android-ndk-linux/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin/../lib/gcc/arm-linux-androideabi/4.9/include -I/home/winter/android-kernel/kernel/goldfish/arch/arm/include -Iarch/arm/include/generated -Iinclude  -include /home/winter/android-kernel/kernel/goldfish/include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-goldfish/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -fno-delete-null-pointer-checks -Os -fno-pic -marm -fno-dwarf2-cfi-asm -mabi=aapcs-linux -mno-thumb-interwork -funwind-tables -D__LINUX_ARM_ARCH__=7 -march=armv7-a -msoft-float -Uarm -Wframe-larger-than=1024 -fno-stack-protector -Wno-unused-but-set-variable -fomit-frame-pointer -g -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack  -DMODULE  -D"KBUILD_STR(s)=\#s" -D"KBUILD_BASENAME=KBUILD_STR(get_trace)"  -D"KBUILD_MODNAME=KBUILD_STR(get_trace)" -c -o /home/winter/CS2302_Project2/syscall3/get_trace.o /home/winter/CS2302_Project2/syscall3/get_trace.c
 
-source_/home/winter/CS2302_Project2/syscall1/start_trace.o := /home/winter/CS2302_Project2/syscall1/start_trace.c
+source_/home/winter/CS2302_Project2/syscall3/get_trace.o := /home/winter/CS2302_Project2/syscall3/get_trace.c
 
-deps_/home/winter/CS2302_Project2/syscall1/start_trace.o := \
+deps_/home/winter/CS2302_Project2/syscall3/get_trace.o := \
   include/linux/module.h \
     $(wildcard include/config/sysfs.h) \
     $(wildcard include/config/modules.h) \
@@ -447,7 +447,11 @@ deps_/home/winter/CS2302_Project2/syscall1/start_trace.o := \
   include/linux/unistd.h \
   /home/winter/android-kernel/kernel/goldfish/arch/arm/include/asm/unistd.h \
     $(wildcard include/config/oabi/compat.h) \
+  include/linux/uaccess.h \
+  /home/winter/android-kernel/kernel/goldfish/arch/arm/include/asm/uaccess.h \
+  /home/winter/android-kernel/kernel/goldfish/arch/arm/include/asm/unified.h \
+    $(wildcard include/config/arm/asm/unified.h) \
 
-/home/winter/CS2302_Project2/syscall1/start_trace.o: $(deps_/home/winter/CS2302_Project2/syscall1/start_trace.o)
+/home/winter/CS2302_Project2/syscall3/get_trace.o: $(deps_/home/winter/CS2302_Project2/syscall3/get_trace.o)
 
-$(deps_/home/winter/CS2302_Project2/syscall1/start_trace.o):
+$(deps_/home/winter/CS2302_Project2/syscall3/get_trace.o):

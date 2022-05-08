@@ -355,6 +355,7 @@ deps_/home/winter/CS2302_Project2/syscall2/stop_trace.o := \
     $(wildcard include/config/task/delay/acct.h) \
     $(wildcard include/config/fair/group/sched.h) \
     $(wildcard include/config/rt/group/sched.h) \
+    $(wildcard include/config/ras/group/sched.h) \
     $(wildcard include/config/cgroup/sched.h) \
     $(wildcard include/config/blk/dev/io/trace.h) \
     $(wildcard include/config/rcu/boost.h) \

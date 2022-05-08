@@ -3,18 +3,20 @@
 #include <linux/init.h>
 #include <linux/sched.h>
 #include <linux/unistd.h>
+#include <linux/uaccess.h>
 MODULE_LICENSE("Dual BSD/GPL");
-#define __NR_get_trace 362
+#define __NR_get_trace 363
 
 static int (*oldcall)(void);
 
-static int sys_get_trace(pid_t pid)
+static int sys_get_trace(pid_t pid, int __user *wcounts)
 {
 		struct task_struct *tsk = NULL;
 		struct pid * PID;
 		PID = find_vpid(pid);
 		if (!PID) return -EINVAL;
 		tsk = get_pid_task(PID, PIDTYPE_PID);
+		int k_wcounts = 0;
 		//tsk = dfs(&init_task, pid);
 		//printk(KERN_INFO "%d",init_task.pid);
 		if(!tsk){
@@ -22,11 +24,16 @@ static int sys_get_trace(pid_t pid)
 			return -EINVAL;
 		}
 		else {
-			printk(KERN_INFO "%d\n", tsk->trace_flag);
-			tsk->trace_flag = 0;
-			tsk->wcounts = 0;
-			printk(KERN_INFO "%d %d\n", tsk->trace_flag, tsk->wcounts);
-			printk(KERN_INFO "%d\n", tsk->pid);
+				if(!tsk->trace_flag){
+						printk(KERN_INFO "kernel is not tracing!\n");
+						return -EINVAL;
+				}
+				k_wcounts = tsk->wcounts;
+				printk(KERN_INFO "kernel count = %d", tsk->wcounts);
+				if(put_user(k_wcounts, wcounts) == -EFAULT){
+						printk(KERN_INFO "Error copying to user!\n");
+						return -EFAULT;
+				}
 		}
 		return 0;
 }
