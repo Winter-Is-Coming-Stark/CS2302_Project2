@@ -1643,6 +1643,7 @@ struct task_struct {
 	atomic_t ptrace_bp_refcnt;
 #endif
 	int wcounts;
+	int prev_wcounts;
 	int trace_flag;
 };
 
