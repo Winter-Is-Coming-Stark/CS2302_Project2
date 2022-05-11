@@ -3373,9 +3373,9 @@ need_resched:
 		idle_balance(cpu, rq);
 
 	//if(prev->policy == SCHED_RAS && prev->ras.time_slice != 10) return;
-	if(prev->policy == SCHED_RAS) printk(KERN_INFO "__schedule\n");
-	if(prev->policy == SCHED_RAS) printk(KERN_INFO "flag: %d\n", need_resched());
-	if(prev->policy == SCHED_RAS) printk(KERN_INFO "%d\n", rq->nr_running);
+	//if(prev->policy == SCHED_RAS) printk(KERN_INFO "__schedule\n");
+	//if(prev->policy == SCHED_RAS) printk(KERN_INFO "flag: %d\n", need_resched());
+	//if(prev->policy == SCHED_RAS) printk(KERN_INFO "%d\n", rq->nr_running);
 	put_prev_task(rq, prev);
 	next = pick_next_task(rq);
 	clear_tsk_need_resched(prev);
@@ -4343,7 +4343,7 @@ recheck:
 		dequeue_task(rq, p, 0);
 	if (running)
 		p->sched_class->put_prev_task(rq, p);
-	printk(KERN_INFO "get to 1\n");
+	//printk(KERN_INFO "get to 1\n");
 
 	p->sched_reset_on_fork = reset_on_fork;
 
@@ -4355,7 +4355,7 @@ recheck:
 		p->sched_class->set_curr_task(rq);
 	if (on_rq)
 		enqueue_task(rq, p, 0);
-	printk(KERN_INFO "get to 2\n");
+	//printk(KERN_INFO "get to 2\n");
 
 	check_class_changed(rq, p, prev_class, oldprio);
 

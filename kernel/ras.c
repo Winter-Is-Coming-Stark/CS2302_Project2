@@ -74,7 +74,7 @@ static unsigned int get_proba(struct rq *rq, struct task_struct *task){
 	if(wcounts == 0) ratio = 0;
 
 	if(avg && wcounts) {
-		if(avg > wcounts) ratio = -avg / wcounts;
+		if(avg > wcounts) ratio = avg / wcounts * (-1);
 		else ratio = wcounts / avg;
 	}
 
@@ -82,13 +82,13 @@ static unsigned int get_proba(struct rq *rq, struct task_struct *task){
 	else if (ratio < -9) prob = 1;
 	else if (ratio < -4) prob = 2;
 	else if (ratio < -2) prob = 3;
-	else if (ratio == -2 || ratio == 1) prob = 5;
+	else if (ratio == -2 || ratio == 1 || ratio == -1) prob = 5;
 	else if (ratio == 2 || ratio == 3) prob = 7;
-	else if (ratio > 3 && prob < 9) prob = 8;
+	else if (ratio > 3 && ratio < 9) prob = 8;
 	else prob = 9;
 	
 	
-	printk(KERN_INFO "avg: %d, wcounts: %d, prob : %d, pid: %d\n", avg, task->wcounts, prob, task->pid);
+	printk(KERN_INFO "avg: %d, wcounts: %d, prob : %d, pid: %d, total: %d, nr: %d, ratio: %d, ", avg, task->wcounts, prob, task->pid, ras_rq->total_wcounts, ras_rq->ras_nr_running, ratio);
     return prob;
 }
 
@@ -116,7 +116,7 @@ static void dequeue_ras_entity(struct sched_ras_entity *ras_se){
     WARN_ON(!ras_rq->ras_nr_running);
     ras_rq->ras_nr_running--;
     /*GROUP*/
-	printk(KERN_INFO "dequeueing_ras_entity\n");
+	//printk(KERN_INFO "dequeueing_ras_entity\n");
 }
 
 static void enqueue_ras_entity(struct sched_ras_entity *ras_se, bool head){
@@ -144,7 +144,7 @@ static void enqueue_ras_entity(struct sched_ras_entity *ras_se, bool head){
         return;
     }
     ras_se->time_slice = time_slice;
-	printk(KERN_INFO "enqueueing ras entity\n");
+	//printk(KERN_INFO "enqueueing ras entity\n");
 }
 
 static void enqueue_task_ras(struct rq *rq, struct task_struct *p, int flags){
@@ -185,7 +185,7 @@ static void requeue_task_ras(struct rq *rq, struct task_struct *p, int head){
     struct ras_rq *ras_rq = &rq->ras;
 
     requeue_ras_entity(ras_rq, ras_se, head);
-	printk(KERN_INFO "requeue task : %d", p->pid);
+	//printk(KERN_INFO "requeue task : %d", p->pid);
 }
 
 static void yield_task_ras(struct rq *rq){
@@ -224,7 +224,7 @@ static struct task_struct *pick_next_task_ras(struct rq *rq){
     
     p = ras_task_of(ras_se);
     if(p){
-        printk(KERN_INFO "Pick next task: %d\n", p->pid);
+        //printk(KERN_INFO "Pick next task: %d\n", p->pid);
     }
     else{
         printk(KERN_INFO "task is NULL | pick_next_task_ras!\n");
@@ -244,7 +244,7 @@ static void put_prev_task_ras(struct rq *rq, struct task_struct *p){
 	}
 
     /*QUESTION*/
-    printk(KERN_INFO "Put prev task: %d/n", p->pid);
+    //printk(KERN_INFO "Put prev task: %d/n", p->pid);
 }
 
 static void switched_to_ras(struct rq * rq, struct task_struct *p){
@@ -270,8 +270,9 @@ static void task_tick_ras(struct rq *rq, struct task_struct *p, int queued){
     }
 
 	if(p->prev_wcounts != p->wcounts){
-			ras_rq->total_wcounts -= p->prev_wcounts;
 			ras_rq->total_wcounts += p->wcounts;
+			ras_rq->total_wcounts -= p->prev_wcounts;
+			p->prev_wcounts = p->wcounts;
 	}
 
     p->ras.time_slice = get_timeslice(rq, p);
