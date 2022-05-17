@@ -49,8 +49,8 @@ static int sys_start_trace(pid_t pid)
 			}
 			tsk->trace_flag = 1;
 			tsk->wcounts = 0;
-			printk(KERN_INFO "%d %d\n", tsk->trace_flag, tsk->wcounts);
-			printk(KERN_INFO "%d\n", tsk->pid);
+			//printk(KERN_INFO "%d %d\n", tsk->trace_flag, tsk->wcounts);
+			//printk(KERN_INFO "%d\n", tsk->pid);
 			return 0;
 		}
 }

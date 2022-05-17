@@ -69,7 +69,7 @@ int main(){
     printf("Task pid : %d, Wcount = %lu, times = %d\n", getpid(), wcounts, proc_id * 256);
 	
 	struct sched_param params;
-	params.sched_priority = 0;
+	params.sched_priority = 9;
 	if(sched_setscheduler(getpid(), 6, &params)){
 			printf("failed to get scheduler!\n");
 	}

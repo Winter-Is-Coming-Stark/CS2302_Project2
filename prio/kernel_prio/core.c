@@ -1054,7 +1054,7 @@ static inline void check_class_changed(struct rq *rq, struct task_struct *p,
 		p->sched_class->switched_to(rq, p);
 	} else if (oldprio != p->prio)
 		p->sched_class->prio_changed(rq, p, oldprio);
-	else if(p->sched_class == SCHED_RAS && oldprio != p->ras_prio)
+	else if(p->sched_class == &ras_sched_class && oldprio != p->ras_prio)
 		p->sched_class->prio_changed(rq, p, oldprio);
 }
 
@@ -4186,7 +4186,7 @@ __setscheduler(struct rq *rq, struct task_struct *p, int policy, int prio)
 	if(p->policy == SCHED_RAS){
 		p->sched_class = &ras_sched_class;
 		p->ras_prio = prio;
-		printk(KERN_INFO "set task prio %d\n", prio);
+		printk(KERN_DEBUG "set task %d with prio %d\n", p->pid, prio);
 	}
 	else if (rt_prio(p->prio))
 		p->sched_class = &rt_sched_class;

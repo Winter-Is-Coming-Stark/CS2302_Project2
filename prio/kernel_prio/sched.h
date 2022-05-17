@@ -66,7 +66,7 @@ struct rt_prio_array {
 
 
 struct ras_prio_array {
-	DECLEARE_BITMAP(bitmap, MAX_RAS_PRIO + 1);
+	DECLARE_BITMAP(bitmap, MAX_RAS_PRIO + 1);
 	struct list_head queue[MAX_RAS_PRIO];
 };
 

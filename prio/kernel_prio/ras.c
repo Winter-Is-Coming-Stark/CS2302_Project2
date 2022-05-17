@@ -8,7 +8,7 @@ void init_ras_rq(struct ras_rq *ras_rq, struct rq *rq){
     int i;
     array = &ras_rq->active;
     for (i = 0; i < MAX_RAS_PRIO;i++) {
-        INIT_LIST_HEAD(array->queue + 1);
+        INIT_LIST_HEAD(array->queue + i);
         __clear_bit(i, array->bitmap);
     }
 
@@ -166,13 +166,27 @@ static void enqueue_ras_entity(struct sched_ras_entity *ras_se, bool head){
         return;
     }
     ras_se->time_slice = time_slice;
-	//printk(KERN_INFO "enqueueing ras entity\n");
+	//printk(KERN_DEBUG "enqueueing ras entity, pid : %d\n", task->pid);
 }
 
 static void enqueue_task_ras(struct rq *rq, struct task_struct *p, int flags){
+	//printk(KERN_INFO "here\n");
+	if(!p){
+			printk(KERN_INFO "p is NULL");
+			return;
+	}
     struct sched_ras_entity *ras_se = &p->ras;
+	if(!ras_se){
+			printk(KERN_INFO "ras_se is NULL");
+			return;
+	}
 	struct ras_rq *ras_rq = ras_rq_of_se(ras_se);
+	if(!ras_rq){
+			printk(KERN_INFO "ras_rq is NULL");
+			return;
+	}
 	ras_rq->total_wcounts += p->wcounts;
+	p->prev_wcounts = p->wcounts;
 
     enqueue_ras_entity(ras_se, flags & ENQUEUE_HEAD);
     inc_nr_running(rq);
@@ -186,6 +200,7 @@ static void dequeue_task_ras(struct rq *rq, struct task_struct *p, int flags){
     update_curr_ras(rq);
     dequeue_ras_entity(ras_se);
     dec_nr_running(rq);
+	//printk(KERN_DEBUG "dequeueing task , pid : %d\n", p->pid);
 }
 
 static void requeue_ras_entity(struct ras_rq *ras_rq, struct sched_ras_entity *ras_se, int head){
@@ -209,7 +224,7 @@ static void requeue_task_ras(struct rq *rq, struct task_struct *p, int head){
     struct ras_rq *ras_rq = &rq->ras;
 
     requeue_ras_entity(ras_rq, ras_se, head);
-	//printk(KERN_INFO "requeue task : %d", p->pid);
+	//printk(KERN_DEBUG "requeue task : %d\n", p->pid);
 }
 
 static void yield_task_ras(struct rq *rq){
@@ -218,7 +233,7 @@ static void yield_task_ras(struct rq *rq){
 }
 
 static void check_preempt_curr_ras(struct rq *rq, struct task_struct *p, int flags){
-    if(p->prio < rq->curr->prio){
+    if(p->ras_prio < rq->curr->ras_prio){
         resched_task(rq->curr);
         printk(KERN_INFO "task %d preempt %d\n",p->pid, rq->curr->pid);
         return;
@@ -234,7 +249,7 @@ static struct sched_ras_entity *pick_next_ras_entity(struct rq *rq, struct ras_r
     return next;
     */
 
-   struct ras_prio_array *active = &ras_rq->active;
+   struct ras_prio_array *array = &ras_rq->active;
    struct sched_ras_entity *next = NULL;
    struct list_head *queue;
    int idx;
@@ -263,7 +278,7 @@ static struct task_struct *pick_next_task_ras(struct rq *rq){
     
     p = ras_task_of(ras_se);
     if(p){
-        //printk(KERN_INFO "Pick next task: %d\n", p->pid);
+        //printk(KERN_DEBUG "Pick next task: %d\n", p->pid);
     }
     else{
         printk(KERN_INFO "task is NULL | pick_next_task_ras!\n");
@@ -278,19 +293,21 @@ static struct task_struct *pick_next_task_ras(struct rq *rq){
 static void put_prev_task_ras(struct rq *rq, struct task_struct *p){
     update_curr_ras(rq);
 	if(!p){
-			printk(KERN_INFO "task is NULL! | put_prev_task\n");
+			printk(KERN_DEBUG "task is NULL! | put_prev_task\n");
 			return 0;
 	}
 
     /*QUESTION*/
-    //printk(KERN_INFO "Put prev task: %d/n", p->pid);
+    //printk(KERN_INFO "Put prev task: %d\n", p->pid);
 }
 
 static void switched_to_ras(struct rq * rq, struct task_struct *p){
     /*PRIO*/
+		printk(KERN_DEBUG "on_rq :%d, curr and p : %d, p->prio : %d, rq->curr->prio : %d\n", p->on_rq, rq->curr != p, p->ras_prio, rq->curr->ras_prio);
     if(p->on_rq && rq->curr != p){
-        if(check_resched && p->prio < rq->curr->prio){
+        if(p->ras_prio < rq->curr->ras_prio){
             resched_task(rq->curr);
+			printk(KERN_DEBUG "task %d with prio %d may be preempted task %d with prio %d\n", rq->curr->pid, rq->curr->ras_prio, p->pid, p->ras_prio);
         }
     }
 }
@@ -299,11 +316,13 @@ static void prio_changed_ras(struct rq *rq, struct task_struct *p, int oldprio){
     /*PRIO*/
     if(!p->on_rq) return;
     if(rq->curr == p){
-        if(oldprio < p->prio) resched_task(p);
+        if(oldprio < p->ras_prio) resched_task(p);
+		printk(KERN_DEBUG "task %d with oldprio %d and new prio %d needs resched\n", rq->curr->pid, oldprio, p->ras_prio);
     }
     
     else {
-        if(p->prio < rq->curr->prio) resched_task(rq->curr);
+        if(p->ras_prio < rq->curr->ras_prio) resched_task(rq->curr);
+		printk(KERN_DEBUG "task %d with prio %d may be preempted task %d with prio %d\n", rq->curr->pid, rq->curr->ras_prio, p->pid, p->ras_prio);
     }
 }
 

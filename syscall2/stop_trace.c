@@ -24,9 +24,8 @@ static int sys_stop_trace(pid_t pid)
 		else {
 			printk(KERN_INFO "%d\n", tsk->trace_flag);
 			tsk->trace_flag = 0;
-			tsk->wcounts = 0;
-			printk(KERN_INFO "%d %d\n", tsk->trace_flag, tsk->wcounts);
-			printk(KERN_INFO "%d\n", tsk->pid);
+			//printk(KERN_INFO "%d %d\n", tsk->trace_flag, tsk->wcounts);
+			//printk(KERN_INFO "%d\n", tsk->pid);
 		}
 		return 0;
 }
