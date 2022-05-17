@@ -29,7 +29,7 @@ static int sys_get_trace(pid_t pid, int __user *wcounts)
 						return -EINVAL;
 				}
 				k_wcounts = tsk->wcounts;
-				printk(KERN_INFO "kernel count = %d", tsk->wcounts);
+				//printk(KERN_INFO "kernel count = %d", tsk->wcounts);
 				if(put_user(k_wcounts, wcounts) == -EFAULT){
 						printk(KERN_INFO "Error copying to user!\n");
 						return -EFAULT;

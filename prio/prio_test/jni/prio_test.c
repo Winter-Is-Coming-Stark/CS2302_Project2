@@ -18,13 +18,9 @@ void segv_handler(int sig_number){
 }
 pid_t pid;
 int proc_id = 0;
-int number = 0;
+const int number = 0;
 
 int main(){
-    printf("please input the number of processes : \n");
-    scanf("%d", &number);
-	number -= 1;
-
     int fd, wcounts = 0, j;
     struct sigaction sa;
     memset(&sa, 0, sizeof(sa));
@@ -35,6 +31,11 @@ int main(){
     fd = open("/dev/zero", O_RDONLY);
     memory = mmap(NULL, alloc_size, PROT_READ, MAP_PRIVATE, fd, 0);
     close(fd);
+
+	int prio;
+	printf("please input the prio : \n");
+	scanf("%d", &prio);
+	printf("prio set to %d\n", prio);
 
     int i = 0;
     
@@ -61,7 +62,7 @@ int main(){
         return 0;
     }
 
-    for(i = 0;i < proc_id * proc_id * proc_id;i++){
+    for(i = 0;i < 10;i++){
 			mprotect(memory, alloc_size, PROT_READ);
 			memory[i] = i;
 	}
@@ -69,12 +70,15 @@ int main(){
     printf("Task pid : %d, Wcount = %lu, times = %d\n", getpid(), wcounts, proc_id * 256);
 	
 	struct sched_param params;
-	params.sched_priority = 9;
+
+	params.sched_priority = prio;
+	int k;
+	scanf("%d", &k);
 	if(sched_setscheduler(getpid(), 6, &params)){
 			printf("failed to get scheduler!\n");
 	}
 	munmap(memory, alloc_size);
-	int k;
+	
     while(1);
 	pid_t wpid;
 
@@ -84,3 +88,4 @@ int main(){
     syscall(362, getpid());
     return 0;
 }
+

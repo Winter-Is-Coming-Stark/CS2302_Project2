@@ -41,8 +41,9 @@ int main(){
     syscall(363, pid, &wcount);
 	syscall(362, pid);
     printf("Wcount for this process is : %d\n", wcount);
-    printf("set process's priority : \n");
+    printf("set process's priority(1-99) : \n");
     scanf("%d", &prio);
+	prio = 9 - prio;
 	params.sched_priority = prio;
     prev_policy = sched_getscheduler(pid);
     if(prev_policy < 0 || prev_policy > 6 || prev_policy == 5){
@@ -51,23 +52,7 @@ int main(){
     }
     if(sched_setscheduler(pid, sched_policy, &params)){
         printf("Failed to set sheduler!\n");
-		 switch (errno)
-        {
-        case EINVAL:
-            printf("This error may caused by following reasons:\n");
-            printf("Invalid arguments: pid is negative or param is NULL.\n");
-            printf("policy is not one of the recognized policies.\n");
-            printf("param does not make sense for the specified policy.\n");
-            break;
-        case EPERM:
-            printf("The calling thread does not have appropriate privileges.\n");
-            break;
-        case ESRCH:
-            printf("The thread whose ID is pid could not be found.\n");
-            break;
-        default:
-            break;
-        }        return 0;
+		return 0;
     }
     
     sched_policy = sched_getscheduler(pid);
@@ -75,7 +60,7 @@ int main(){
         printf("Failed to get scheduler!\n");
         return 0; 
     }
-    printf("Pre scheduler : %d\n", prev_policy);
-    printf("cur scheduler : %d\n", sched_policy);
+    printf("Pre scheduler : %s\n", policy_name[prev_policy]);
+    printf("cur scheduler : %s\n", policy_name[sched_policy]);
     return 0;
 }
