@@ -1,4 +1,6 @@
-# CS2302_Project2
+# CS2303_Project2
+
+```
 .
 ├── Prj2README.md
 ├── Report.pdf
@@ -42,3 +44,6 @@
 └── syscall3
     ├── Makefile
     └── get_trace.c		#kernel module for syscall 363 which gets the wcounts of a process
+
+```
+
